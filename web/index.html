@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Picks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF8F5;--ink:#161513;--muted:#878787;--line:#E8E8E8;--panel:#fff;--soft:#F6F4F0;--green:#2E7D6B;--greenbg:#E8F3EF;--amber:#B7791F;--red:#B4442F}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit}
+.serif{font-family:Newsreader,Georgia,serif}
+.mono{font-family:'Geist Mono',monospace}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+nav .brand{font-weight:600;letter-spacing:-.01em;text-decoration:none;display:flex;gap:10px;align-items:center}
+nav .brand span{font-family:'Geist Mono',monospace;font-weight:400;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:8px;background:var(--ink);color:var(--bg);font:500 14px Inter;padding:12px 20px;cursor:pointer;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+/* landing */
+.hero{padding:72px 0 40px;max-width:780px}
+.hero h1{font-family:Newsreader;font-weight:400;font-size:clamp(44px,7vw,76px);line-height:1.02;letter-spacing:-.03em}
+.hero p{font-size:19px;line-height:1.55;color:#5f5c57;margin-top:20px;max-width:640px}
+.hero .form{margin-top:32px}
+.form{margin-top:0;display:flex;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 24px 60px -36px rgba(40,30,10,.3);max-width:720px}
+.form input{flex:1;min-width:220px;border:0;outline:0;font:16px Inter;padding:10px 12px;background:transparent}
+.form select{border:1px solid var(--line);border-radius:8px;font:13px 'Geist Mono';padding:0 10px;background:var(--soft)}
+.models{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font:12px 'Geist Mono'}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.how{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:48px 0}
+.how div{padding:22px 22px 22px 0}
+.how div+div{padding-left:22px;border-left:1px solid var(--line)}
+.how b{display:block;font-family:Newsreader;font-weight:400;font-size:21px;margin:8px 0 6px}
+.how p{color:var(--muted);line-height:1.6;font-size:13px}
+.recent{margin-bottom:60px}
+.recent a{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.recent a:hover{background:var(--soft)}
+/* run */
+.runhead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:28px 0 20px;flex-wrap:wrap}
+.runhead h1{font-family:Newsreader;font-weight:400;font-size:44px;letter-spacing:-.02em;line-height:1.05}
+.runhead .sum{color:var(--muted);margin-top:8px;max-width:640px;line-height:1.5}
+.big{text-align:right}
+.big .pct{font-family:Newsreader;font-size:76px;line-height:.9;letter-spacing:-.03em}
+.big .lab{color:var(--muted);margin-top:6px}
+.stats{display:flex;gap:28px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.stats div b{font:500 22px Inter;display:block;letter-spacing:-.02em}
+.stats div span{font-size:12px;color:var(--muted)}
+.progress{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:-1px}
+.progress i{display:block;height:100%;background:var(--ink);transition:width .6s}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;padding:24px 0 60px}
+.gridhead,.row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.gridhead{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2}
+.gridhead div{display:flex;align-items:center;gap:7px;font:12px 'Geist Mono';white-space:nowrap;overflow:hidden}
+.taskline{grid-column:1/-1;font-size:12.5px;color:#5f5c57;margin:12px 0 2px;line-height:1.45;display:flex;gap:10px}
+.taskline .mono{color:var(--muted);font-size:11px;flex:none;padding-top:1px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 11px;min-height:74px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;gap:6px;transition:transform .15s,border-color .15s;position:relative;overflow:hidden}
+.tile:hover{transform:translateY(-1px);border-color:#cfcac2}
+.tile .st{display:flex;align-items:center;gap:6px;font:10.5px 'Geist Mono';color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tile .act{font-size:12px;line-height:1.35;color:#3d3a35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tile .pick{display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px}
+.tile .pick img{width:16px;height:16px;border-radius:3px}
+.tile.target{border-color:rgba(46,125,107,.55);background:var(--greenbg)}
+.tile.failed{opacity:.55}
+.tile.running::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:40%;background:var(--ink);animation:scan 1.4s ease-in-out infinite}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+.pulse{width:7px;height:7px;border-radius:50%;background:#2fa36b;box-shadow:0 0 0 0 rgba(47,163,107,.5);animation:pulse 1.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(47,163,107,0)}100%{box-shadow:0 0 0 0 rgba(47,163,107,0)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+.card h3{font-family:Newsreader;font-weight:400;font-size:21px;margin-bottom:12px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;gap:10px;margin:9px 0}
+.bar .nm{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .nm img{width:14px;height:14px;border-radius:3px}
+.bar .tr{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:#cfcac2;border-radius:4px;transition:width .6s}
+.bar.t .tr i{background:var(--green)}
+.bar .n{font:13px 'Geist Mono';text-align:right}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td{padding:8px 0;border-top:1px solid var(--line);vertical-align:top}
+td+td{text-align:right;font-family:'Geist Mono'}
+.log{font:11.5px/1.6 'Geist Mono';color:var(--muted);white-space:pre-wrap;max-height:170px;overflow:auto}
+.cta{background:var(--ink);color:var(--bg);border-radius:12px;padding:22px}
+.cta h3{color:var(--bg)}
+.cta p{color:rgba(250,248,245,.7);line-height:1.6;font-size:13px;margin-bottom:16px}
+.cta .btn{background:var(--bg);color:var(--ink)}
+/* drawer */
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:-30px 0 80px -40px rgba(0,0,0,.35);transform:translateX(105%);transition:transform .25s;z-index:10;overflow:auto;padding:28px}
+#drawer.open{transform:none}
+#drawer h2{font-family:Newsreader;font-weight:400;font-size:30px;letter-spacing:-.02em;margin:8px 0 14px}
+#drawer .sec{margin-top:20px}
+#drawer .sec .eyebrow{margin-bottom:8px}
+#drawer blockquote{background:var(--soft);border-radius:8px;padding:12px 14px;line-height:1.55}
+.pkgs{display:flex;flex-wrap:wrap;gap:6px}
+.x{position:absolute;top:18px;right:20px;background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted)}
+.err{color:var(--red);margin-top:12px}
+.planning{padding:120px 0;text-align:center}
+.planning h2{font-family:Newsreader;font-weight:400;font-size:40px;letter-spacing:-.02em}
+.planning p{color:var(--muted);margin-top:10px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.how{grid-template-columns:1fr}.how div+div{border-left:0;padding-left:0;border-top:1px solid var(--line)}.big{text-align:left}}
+@media (max-width:620px){.gridhead div span{display:none}.tile .act{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><a class="brand" href="/">Agent Picks <span>by OpenComputer</span></a><a class="btn ghost" href="https://cal.com/team/digger/opencomputer-founder-chat" target="_blank" rel="noreferrer">Book a demo</a></nav>
+  <div id="bar" style="display:none;padding:4px 0 8px"></div>
+  <div id="app"></div>
+</div>
+<aside id="drawer"><button class="x" onclick="closeDrawer()">×</button><div id="dbody"></div></aside>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fav = (url) => { try { return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`; } catch { return ""; } };
+const ROSTER = [["Claude Sonnet 5.5", "#D97757"], ["GPT-6.1 Sol", "#10A37F"], ["Gemini 3.8 Flash", "#4285F4"], ["Grok 4.7", "#6B6B6B"], ["DeepSeek V4.1", "#4D6BFE"]];
+let timer = null, current = null;
+
+function startForm(id) {
+  return `<form class="form" id="f${id}">
+      <input id="u${id}" placeholder="Enter a URL, e.g. yourcompany.com" autocomplete="off" required>
+      <select id="n${id}" title="How many coding sessions"><option value="10">10 sessions</option><option value="20" selected>20 sessions</option><option value="50">50 sessions</option><option value="100">100 sessions</option></select>
+      <button class="btn" id="go${id}">Send the agents &rarr;</button>
+    </form><div class="err" id="err${id}"></div>`;
+}
+function bindForm(id) {
+  const f = document.getElementById("f" + id);
+  if (!f) return;
+  f.onsubmit = async (e) => {
+    e.preventDefault();
+    const b = document.getElementById("go" + id), err = document.getElementById("err" + id);
+    b.disabled = true; err.textContent = "";
+    try {
+      const r = await fetch("/api/runs", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: document.getElementById("u" + id).value, size: Number(document.getElementById("n" + id).value) }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error);
+      go(`/run/${j.id}`);
+    } catch (e) { err.textContent = e.message; b.disabled = false; }
+  };
+}
+
+function route() {
+  clearTimeout(timer);
+  const m = location.pathname.match(/^\/run\/([a-z0-9]+)/);
+  m ? showRun(m[1]) : showHome();
+}
+window.onpopstate = route;
+function go(path) { history.pushState(null, "", path); route(); }
+
+async function showHome() {
+  showBar(false);
+  $("#app").innerHTML = `
+  <section class="hero">
+    <p class="eyebrow">An experiment on OpenComputer</p>
+    <h1>Do coding agents pick <i>you?</i></h1>
+    <p>Paste your URL. We write real developer requests for your category, then start one computer per request and let coding agents build the feature. You see which vendor each agent actually installs.</p>
+    ${startForm("home")}
+    <div class="models">${ROSTER.map(([n, c]) => `<span class="chip"><span class="dot" style="background:${c}"></span>${n}</span>`).join("")}</div>
+  </section>
+  <div class="how">
+    <div><span class="mono eyebrow">01</span><b>We write the requests</b><p>From your homepage, a planner writes tasks a developer would give a coding agent. None of them names you or a competitor.</p></div>
+    <div><span class="mono eyebrow">02</span><b>Every request gets a computer</b><p>Each session is a coding agent in its own project on its own OpenComputer computer. It searches, reads docs, installs a package and writes the code.</p></div>
+    <div><span class="mono eyebrow">03</span><b>You see what they chose</b><p>Picks come from the agents' reports, checked against the install commands in each session's log. Five models, every task.</p></div>
+  </div>
+  <section class="recent" id="recent"></section>`;
+  bindForm("home");
+  $("#uhome").focus();
+  const runs = await (await fetch("/api/runs")).json();
+  if (runs.length) $("#recent").innerHTML = `<p class="eyebrow" style="margin-bottom:6px">Recent runs</p>` + runs.slice(0, 10).map((r) => `<a href="/run/${r.id}" onclick="event.preventDefault();go('/run/${r.id}')"><span><b>${esc(r.brand ?? r.url)}</b> <span style="color:var(--muted)">${esc(r.url)}</span></span><span class="mono" style="color:var(--muted)">${r.size || "…"} sessions · ${r.phase} · ${new Date(r.createdAt).toLocaleString()}</span></a>`).join("");
+}
+
+function showBar(on) {
+  const bar = $("#bar");
+  if (!on) { bar.style.display = "none"; bar.innerHTML = ""; return; }
+  if (!bar.innerHTML) { bar.innerHTML = `<p class="eyebrow" style="margin-bottom:8px">Try another URL</p>${startForm("bar")}`; bindForm("bar"); }
+  bar.style.display = "block";
+}
+
+async function showRun(id) {
+  showBar(true);
+  let v;
+  try { const r = await fetch(`/api/runs/${id}`); if (!r.ok) throw new Error("Run not found"); v = await r.json(); }
+  catch (e) { $("#app").innerHTML = `<div class="planning"><h2>${esc(e.message)}</h2></div>`; return; }
+  current = v;
+  if (v.phase === "planning" || v.phase === "error") {
+    $("#app").innerHTML = `<div class="planning"><p class="eyebrow">${esc(v.url)}</p><h2>${v.phase === "error" ? "Something went wrong" : "Writing developer requests…"}</h2><p>${v.phase === "error" ? esc(v.error) : "Reading the homepage and drafting tasks that never name a vendor."}</p></div>`;
+  } else renderRun(v);
+  if (v.phase === "planning" || v.phase === "running") timer = setTimeout(() => showRun(id), 2500);
+}
+
+function renderRun(v) {
+  const c = v.counts, p = v.plan;
+  const pct = c.done ? Math.round((100 * c.picked) / c.done) : 0;
+  const max = Math.max(1, ...v.leaderboard.map((x) => x.count));
+  const tiles = p.tasks.map((t, ti) => {
+    const row = v.cells.filter((x) => x.task === ti).sort((a, b) => a.i - b.i);
+    return `<div class="taskline"><span class="mono">${String(ti + 1).padStart(2, "0")} · ${t.stack}</span><span>${esc(t.task)}</span></div>` + row.map(tile).join("");
+  }).join("");
+  $("#app").innerHTML = `
+  <div class="runhead">
+    <div><p class="eyebrow">${esc(p.category)}</p><h1>${esc(p.brand)}</h1><p class="sum">${esc(p.summary)} <span class="mono" style="font-size:12px">${esc(p.domain)}</span></p></div>
+    <div class="big"><div class="pct">${c.done ? pct + "%" : "–"}</div><div class="lab">of finished agents picked ${esc(p.brand)} (${c.picked} of ${c.done})</div></div>
+  </div>
+  <div class="stats">
+    <div><b>${c.total}</b><span>coding sessions</span></div>
+    <div><b>${c.running}</b><span>running now</span></div>
+    <div><b>${c.queued}</b><span>waiting for a computer</span></div>
+    <div><b>${c.done}</b><span>finished</span></div>
+    <div><b>${c.failed}</b><span>failed${c.failed ? ` · <a href="#" onclick="retryFailed(event)">retry</a>` : ""}</span></div>
+    <div><b>${(v.gapMs / 1000).toFixed(1)}s</b><span>between starts${c.throttled ? ` · ${c.throttled} throttles` : ""}</span></div>
+  </div>
+  <div class="progress"><i style="width:${(100 * (c.done + c.failed)) / c.total}%"></i></div>
+  <div class="layout">
+    <div>
+      <div class="gridhead">${v.roster.map((m) => `<div><span class="dot" style="background:${m.color}"></span><span>${esc(m.label)}</span></div>`).join("")}</div>
+      <div class="row">${tiles}</div>
+    </div>
+    <div>
+      <div class="card"><h3>What the agents chose</h3>${v.leaderboard.length ? v.leaderboard.map((x) => `<div class="bar ${x.target ? "t" : ""}"><div><div class="nm">${fav(x.url) ? `<img src="${fav(x.url)}">` : ""}${esc(x.name)}</div><div class="tr"><i style="width:${(100 * x.count) / max}%"></i></div></div><div class="n">${x.count}</div></div>`).join("") : `<p style="color:var(--muted)">Picks appear as agents finish.</p>`}</div>
+      <div class="card"><h3>By model</h3><table>${v.byModel.map((m) => `<tr><td><span class="dot" style="display:inline-block;background:${m.color};margin-right:7px"></span>${esc(m.label)}<div style="color:var(--muted);font-size:11.5px;margin-top:3px">${m.top.map(([n, k]) => `${esc(n)} ×${k}`).join(", ") || "&nbsp;"}</div></td><td>${m.picked}/${m.done}</td></tr>`).join("")}</table></div>
+      <div class="card"><h3>Activity</h3><div class="log">${v.log.map(esc).join("\n")}</div></div>
+      <div class="cta card"><h3>Run this on your own agents</h3><p>Every tile is a coding agent on its own OpenComputer computer, with a durable session and a full event log.</p><a class="btn" href="https://cal.com/team/digger/opencomputer-founder-chat" target="_blank" rel="noreferrer">Book a demo &rarr;</a></div>
+    </div>
+  </div>`;
+}
+
+function tile(c) {
+  const m = v_roster(c.model);
+  let st, body;
+  if (c.state === "done") {
+    st = c.pick.verified ? "✓ built" : "built, unverified";
+    body = `<div class="pick">${fav(c.pick.url) ? `<img src="${fav(c.pick.url)}">` : ""}${esc(c.pick.name)}</div>`;
+  } else if (c.state === "failed") { st = "failed"; body = `<div class="act">${esc(c.activity)}</div>`; }
+  else if (c.state === "running" || c.state === "starting") { st = `<span class="pulse"></span>${c.steps} steps`; body = `<div class="act">${esc(c.activity)}</div>`; }
+  else { st = c.state === "retrying" ? "retry queued" : "queued"; body = `<div class="act" style="color:var(--muted)">${esc(c.activity)}</div>`; }
+  const cls = ["tile", c.state === "running" || c.state === "starting" ? "running" : "", c.isTarget ? "target" : "", c.state === "failed" ? "failed" : ""].join(" ");
+  return `<div class="${cls}" onclick="openCell(${c.i})" title="${esc(m?.label)}"><div class="st">${st}</div>${body}</div>`;
+}
+const v_roster = (k) => current?.roster.find((r) => r.key === k);
+
+function openCell(i) {
+  const c = current.cells.find((x) => x.i === i), t = current.plan.tasks[c.task], m = v_roster(c.model);
+  const dur = c.startedAt ? Math.round(((c.endedAt ?? Date.now()) - c.startedAt) / 1000) : 0;
+  $("#dbody").innerHTML = `
+    <p class="eyebrow"><span class="dot" style="display:inline-block;background:${m.color};margin-right:6px"></span>${esc(m.label)} · ${t.stack} · attempt ${c.attempt}</p>
+    <h2>${c.pick ? esc(c.pick.name) : esc(c.activity)}</h2>
+    ${c.isTarget ? `<span class="chip" style="border-color:rgba(46,125,107,.5);color:var(--green)">Picked ${esc(current.plan.brand)}</span>` : ""}
+    <div class="sec"><p class="eyebrow">The developer asked</p><blockquote>${esc(t.task)}</blockquote></div>
+    ${c.pick ? `<div class="sec"><p class="eyebrow">Why it chose ${esc(c.pick.name)}</p><blockquote>${esc(c.pick.reason)}</blockquote></div>
+    ${c.pick.supporting?.length ? `<div class="sec"><p class="eyebrow">Also used</p><div class="pkgs">${c.pick.supporting.map((a) => `<span class="chip">${esc(a)}</span>`).join("")}</div></div>` : ""}
+    <div class="sec"><p class="eyebrow">Also considered</p><div class="pkgs">${c.pick.alternatives.map((a) => `<span class="chip">${esc(a)}</span>`).join("") || "<span style='color:var(--muted)'>None listed</span>"}</div></div>` : ""}
+    <div class="sec"><p class="eyebrow">Installed (from the session log)</p><div class="pkgs">${c.installs.map((a) => `<span class="chip mono">${esc(a)}</span>`).join("") || "<span style='color:var(--muted)'>Nothing installed yet</span>"}</div></div>
+    <div class="sec"><p class="eyebrow">Session</p><p class="mono" style="font-size:12px;line-height:1.8">${c.sessionId ? esc(c.sessionId) : "not started"}<br>${c.steps} tool steps · ${dur}s${c.throttled ? ` · ${c.throttled} throttled calls` : ""}${c.pick ? ` · checks ${c.pick.verified ? "passed" : "not verified"}` : ""}</p></div>`;
+  $("#drawer").classList.add("open");
+}
+async function retryFailed(e) { e.preventDefault(); await fetch(`/api/runs/${current.id}/retry-failed`, { method: "POST" }); clearTimeout(timer); showRun(current.id); }
+function closeDrawer() { $("#drawer").classList.remove("open"); }
+document.addEventListener("keydown", (e) => e.key === "Escape" && closeDrawer());
+route();
+</script>
+</body>
+</html>

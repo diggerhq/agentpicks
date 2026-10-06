@@ -1,0 +1,22 @@
+{
+  "name": "agent-picks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "tsx scripts/gen-agents.ts",
+    "deploy:all": "for k in claude gpt gemini grok deepseek; do (cd projects/$k && opencomputer deploy) || exit 1; done",
+    "web": "tsx web/server.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@opencomputer/agent": "^0.8.0",
+    "@opencomputer/sdk": "^2.3.0"
+  },
+  "devDependencies": {
+    "@opencomputer/cli": "^0.7.0",
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

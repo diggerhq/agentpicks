@@ -1,0 +1,18 @@
+{
+  "tools": {
+    "shell": true,
+    "read": true
+  },
+  "permissions": [
+    {
+      "action": "*",
+      "resource": "*",
+      "effect": "allow"
+    }
+  ],
+  "permission": {
+    "shell": "allow",
+    "read": "allow",
+    "external_directory": "allow"
+  }
+}

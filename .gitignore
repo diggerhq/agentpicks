@@ -1,0 +1,7 @@
+node_modules
+.env.local
+opencomputer/.env.local
+.opencomputer/
+projects/*/.opencomputer/
+projects/*/opencomputer/.env.local
+runs/
