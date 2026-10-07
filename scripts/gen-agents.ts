@@ -7,14 +7,14 @@ import { cpSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } fr
 import { join } from "node:path";
 import { ROSTER } from "../lib/roster.ts";
 
-const NAMES = ["web_search", "web_fetch", "report_choice"];
+const NAMES = ["web_fetch", "report_choice"];
 
 function rewrite(dir: string, key: string, model: string) {
   for (const f of readdirSync(dir)) {
     const p = join(dir, f);
     if (statSync(p).isDirectory()) { rewrite(p, key, model); continue; }
     if (!/\.(ts|toml|json)$/.test(f)) continue;
-    let s = readFileSync(p, "utf8").replace(`useModel("__MODEL__")`, `useModel("${model}")`).replace(/"exa-api"/g, `"exa-api-${key}"`);
+    let s = readFileSync(p, "utf8").replace(`useModel("__MODEL__")`, `useModel("${model}")`);
     for (const n of NAMES) s = s.replace(new RegExp(`\\b${n}\\b`, "g"), `${n}_${key}`);
     writeFileSync(p, s);
   }

@@ -20,7 +20,7 @@ export function installsFrom(command: string): string[] {
   return out;
 }
 
-/** One terminal line for a tool call. Tool names carry a per-agent suffix (web_search_gpt). */
+/** One terminal line for a tool call. Tool names carry a per-agent suffix (web_fetch_gpt). */
 export function line(tool: string, input: any): { kind: string; text: string } {
   const t = tool.replace(/_(claude|gpt|gemini|grok|deepseek)$/, "");
   if (t === "shell") {
@@ -35,7 +35,6 @@ export function line(tool: string, input: any): { kind: string; text: string } {
     const kind = /tsc|typecheck|mypy|pytest|python3? -c|npm (run )?(build|test)/.test(first) ? "check" : "shell";
     return { kind, text: `$ ${first.slice(0, 90)}` };
   }
-  if (t === "web_search") return { kind: "search", text: `⌕ ${String(input?.query ?? "").slice(0, 80)}` };
   if (t === "web_fetch") {
     try {
       const u = new URL(String(input?.url));

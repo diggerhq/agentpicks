@@ -32438,7 +32438,6 @@ function line(tool, input) {
     const kind = /tsc|typecheck|mypy|pytest|python3? -c|npm (run )?(build|test)/.test(first) ? "check" : "shell";
     return { kind, text: `$ ${first.slice(0, 90)}` };
   }
-  if (t === "web_search") return { kind: "search", text: `\u2315 ${String(input?.query ?? "").slice(0, 80)}` };
   if (t === "web_fetch") {
     try {
       const u = new URL(String(input?.url));

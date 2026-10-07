@@ -3,7 +3,7 @@
 **Do coding agents pick you?** Give Agent Picks a product's URL. It drafts realistic
 developer requests for that product's category, then runs every request as a coding
 agent on its own [OpenComputer](https://opencomputer.dev) computer, on five models at
-once. Each agent scaffolds a project, researches options, installs a vendor, writes the
+once. Each agent scaffolds a project, picks a vendor, reads its docs, installs it, writes the
 integration and type-checks it. You see which vendor every agent actually chose.
 
 [![Deploy to OpenComputer](https://img.shields.io/badge/Deploy%20to-OpenComputer-161513)](https://app.opencomputer.dev/new?repository-url=https%3A%2F%2Fgithub.com%2Fdiggerhq%2Fagentpicks)
@@ -14,6 +14,8 @@ Deployed from the template, it **runs every Monday on a schedule** against your
 - **Five models, every request:** Claude Sonnet 5.5, GPT-6.1 Sol, Gemini 3.8 Flash,
   Grok 4.7 and DeepSeek V4.1.
 - **Agents never learn whose site it is.** Requests describe the need, never a vendor.
+- **No web search,** like a default local OpenCode setup: agents choose from what the model
+  knows and can read pages at URLs they know (`web_fetch`).
 - **Picks are checked against evidence:** each agent reports its choice through a result
   tool, cross-checked against the `npm`/`pip` install commands in its session log.
 
@@ -27,7 +29,7 @@ Deployed from the template, it **runs every Monday on a schedule** against your
                  │  start one session per request × model (management API)                        │
                  ▼                                                                                 │
    agentpicks--dev-claude · --dev-gpt · --dev-gemini · --dev-grok · --dev-deepseek                │
-   each session: own computer · shell · web search · web fetch · report_choice (result tool) ─────┘
+   each session: own computer · shell · web fetch · report_choice (result tool) ── ─────┘
 ```
 
 | Path | What it is |
@@ -42,8 +44,7 @@ Deployed from the template, it **runs every Monday on a schedule** against your
 ## Deploy your own (one click)
 
 1. Click **Deploy to OpenComputer** above.
-2. Fill in `TARGET_URL` (your homepage), an `EXA_API_KEY` ([exa.ai](https://exa.ai)) and an
-   `OPENCOMPUTER_API_KEY`.
+2. Fill in `TARGET_URL` (your homepage) and an `OPENCOMPUTER_API_KEY`.
 3. The first run starts right away with 2 requests (10 coding sessions). After that, the
    `weekly` schedule runs in Production every Monday at 14:00 UTC. Change it in
    `opencomputer/agents/agentpicks/schedules/weekly.ts`.

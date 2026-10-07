@@ -1,5 +1,4 @@
 import { useInput, useModel, useTool } from "@opencomputer/agent";
-import { webSearch } from "./tools/exa.js";
 import { reportChoice } from "./tools/report.js";
 import { webFetch } from "./tools/web.js";
 
@@ -16,7 +15,6 @@ export default function Dev() {
   useModel("deepseek/deepseek-v4.1-flash");
   useTool("shell");
   useTool("read");
-  useTool(webSearch);
   useTool(webFetch);
   useTool(reportChoice);
 
@@ -45,7 +43,8 @@ Then work the way a strong coding agent would for a real user:
 1. Look around the project.
 2. Decide how to implement the request. If it needs an external service, API or
    library, pick the one you would genuinely recommend for this developer. You
-   may use web_search_deepseek and web_fetch_deepseek to check current options, docs and pricing.
+   may use web_fetch_deepseek to read documentation, READMEs, pricing pages and package
+   registries for URLs you know.
 3. Install what you chose, write the integration, add any required environment
    variables to .env.example (names only, never real keys), and add a short
    section to the README.

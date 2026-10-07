@@ -20,10 +20,6 @@ description = "Optional. Developer requests per scheduled run; each runs on all 
 required = false
 example = "4"
 
-[template.secrets.EXA_API_KEY]
-description = "Exa API key (https://exa.ai) for the coding agents' web search."
-required = true
-
 [template.secrets.OPENCOMPUTER_API_KEY]
 description = "An OpenComputer API key. The agentpicks orchestrator uses it to start the coding sessions and read their results."
 required = true
