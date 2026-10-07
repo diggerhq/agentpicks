@@ -7,8 +7,9 @@ let apiKey = process.env.OPENCOMPUTER_API_KEY ?? "";
 if (!apiKey && existsSync(join(homedir(), ".opencomputer/config.json"))) apiKey = JSON.parse(readFileSync(join(homedir(), ".opencomputer/config.json"), "utf8")).apiKey ?? "";
 export const API = (process.env.OPENCOMPUTER_API_URL ?? "https://app.opencomputer.dev").replace(/\/$/, "");
 export const ENV = (process.env.OC_ENVIRONMENT ?? "development") as "development" | "production";
-// One project per model (scripts/gen-agents.ts); each project's single agent is agent-picks-<key>.
-export const agentFor = (key: string) => `agent-picks-${key}@${ENV}`;
+// One project: the orchestrator's cloud id is the project id; coding agents are "<id>--dev-<key>".
+export const ROOT_AGENT = process.env.OC_AGENT ?? "agentpicks";
+export const agentFor = (key: string) => `${ROOT_AGENT}--dev-${key}@${ENV}`;
 
 export async function oc<T = any>(path: string, init: { method?: string; body?: unknown; idem?: string } = {}): Promise<T> {
   for (let attempt = 0; ; attempt++) {

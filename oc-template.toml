@@ -1,0 +1,29 @@
+schema = 1
+
+[template]
+name = "Agent Picks"
+description = "Do coding agents pick you? Every week, coding agents on five models each build real features in fresh projects on their own computers, and you see which vendor each one installs."
+documentation = "https://github.com/diggerhq/agentpicks#readme"
+default_project_name = "agentpicks"
+
+[template.first_run]
+agent = "agentpicks"
+prompt = "Run Agent Picks now for my TARGET_URL with 2 requests."
+
+[template.runtime_variables.TARGET_URL]
+description = "Your product's homepage. The weekly schedule (Mondays 14:00 UTC, Production) measures how often coding agents pick it."
+required = true
+example = "https://yourcompany.com"
+
+[template.runtime_variables.TASKS_PER_RUN]
+description = "Optional. Developer requests per scheduled run; each runs on all 5 models (default 4, so 20 coding sessions)."
+required = false
+example = "4"
+
+[template.secrets.EXA_API_KEY]
+description = "Exa API key (https://exa.ai) for the coding agents' web search."
+required = true
+
+[template.secrets.OPENCOMPUTER_API_KEY]
+description = "An OpenComputer API key. The agentpicks orchestrator uses it to start the coding sessions and read their results."
+required = true

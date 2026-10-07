@@ -1,7 +1,6 @@
-node_modules
 .env.local
-opencomputer/.env.local
 .opencomputer/
-projects/*/.opencomputer/
-projects/*/opencomputer/.env.local
+.vercel
+node_modules
+opencomputer/.env.local
 runs/

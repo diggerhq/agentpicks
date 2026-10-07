@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Picks</title>
+<meta name="description" content="Do coding agents pick you? Coding agents on their own computers build real features, and you see which vendor each one installs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF8F5;--ink:#161513;--muted:#878787;--line:#E8E8E8;--panel:#fff;--soft:#F3F1ED;--green:#2E7D6B;--greenbg:#E8F3EF;--live:#3DDC97;--amber:#E0A23B;--red:#C2553F;--term:#121110;--termline:#2a2826;--termtext:#d9d4cb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit}
+button{font:inherit}
+.serif{font-family:Newsreader,Georgia,serif}
+.mono{font-family:'Geist Mono',monospace}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+nav .brand{font-weight:600;letter-spacing:-.01em;text-decoration:none;display:flex;gap:10px;align-items:center}
+nav .brand span{font-family:'Geist Mono',monospace;font-weight:400;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+nav .right{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;background:var(--ink);color:var(--bg);font-weight:500;font-size:14px;padding:12px 20px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.light{background:var(--bg);color:var(--ink)}
+.btn.sm{padding:8px 12px;font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font:12px 'Geist Mono',monospace}
+.chip.off{opacity:.4;text-decoration:line-through}
+button.chip{cursor:pointer}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.err{color:var(--red);margin-top:12px;min-height:1em}
+.tries{font:12px 'Geist Mono',monospace;color:var(--muted)}
+/* home */
+.hero{padding:72px 0 36px;max-width:800px}
+.hero h1{font-family:Newsreader;font-weight:400;font-size:clamp(44px,7vw,78px);line-height:1.02;letter-spacing:-.03em}
+.hero p{font-size:19px;line-height:1.55;color:#5f5c57;margin-top:20px;max-width:640px}
+.form{display:flex;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 24px 60px -36px rgba(40,30,10,.3);max-width:720px;margin-top:32px}
+.form input{flex:1;min-width:220px;border:0;outline:0;font:16px Inter;padding:10px 12px;background:transparent}
+.form select{border:1px solid var(--line);border-radius:8px;font:13px 'Geist Mono';padding:0 10px;background:var(--soft)}
+.models{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.how{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:48px 0}
+.how div{padding:22px 22px 22px 0}
+.how div+div{padding-left:22px;border-left:1px solid var(--line)}
+.how b{display:block;font-family:Newsreader;font-weight:400;font-size:21px;margin:8px 0 6px}
+.how p{color:var(--muted);line-height:1.6;font-size:13px}
+.recent{margin-bottom:60px}
+.recent a{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none}
+/* planning */
+.center{padding:120px 0;text-align:center}
+.center h2{font-family:Newsreader;font-weight:400;font-size:40px;letter-spacing:-.02em}
+.center p{color:var(--muted);margin-top:10px}
+.spinner{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--ink);animation:spin .8s linear infinite;margin:0 auto 24px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* editor */
+.edhead{padding:36px 0 18px;display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap}
+.edhead h1{font-family:Newsreader;font-weight:400;font-size:46px;letter-spacing:-.02em;line-height:1.05}
+.edhead p{color:var(--muted);margin-top:8px;max-width:680px;line-height:1.55}
+.tasks{display:flex;flex-direction:column;gap:12px;padding-bottom:140px}
+.task{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start}
+.task .n{font:12px 'Geist Mono';color:var(--muted);padding-top:9px}
+.task textarea{width:100%;border:0;outline:0;resize:none;font:15px/1.55 Inter;background:transparent;min-height:48px;padding:6px 0}
+.task .side{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.task select{border:1px solid var(--line);border-radius:7px;font:12px 'Geist Mono';padding:6px 8px;background:var(--soft)}
+.task .rm{border:0;background:none;color:var(--muted);cursor:pointer;font-size:12px}
+.task .rm:hover{color:var(--red)}
+.add{border:1px dashed #cfcac2;border-radius:12px;background:transparent;padding:14px;color:var(--muted);cursor:pointer;font-size:14px}
+.add:hover{color:var(--ink);border-color:var(--ink)}
+.sticky{position:fixed;left:0;right:0;bottom:0;background:rgba(250,248,245,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:5}
+.sticky .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.sticky .sum{font-size:15px}
+.sticky .sum b{font-weight:600}
+/* fleet */
+.fleet{background:var(--term);color:var(--termtext);border-radius:16px;padding:26px 28px;margin-top:20px;position:relative;overflow:hidden}
+.fleet::before{content:"";position:absolute;inset:0;background:radial-gradient(800px 260px at 15% 0%,rgba(61,220,151,.10),transparent 60%);pointer-events:none}
+.fleet .top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative}
+.fleet h1{font-family:Newsreader;font-weight:400;font-size:40px;letter-spacing:-.02em;color:#f4f1ea;line-height:1.05}
+.fleet .cat{font:11px 'Geist Mono';letter-spacing:.16em;text-transform:uppercase;color:#8f897f;margin-bottom:8px}
+.fleet .sum{color:#8f897f;margin-top:8px;max-width:560px;line-height:1.5;font-size:13px}
+.live{display:flex;gap:28px;align-items:flex-end}
+.live .big{font-family:Newsreader;font-size:80px;line-height:.85;letter-spacing:-.03em;color:#f4f1ea;font-variant-numeric:tabular-nums}
+.live .lab{font:11px 'Geist Mono';letter-spacing:.12em;text-transform:uppercase;color:#8f897f;margin-top:10px;display:flex;align-items:center;gap:8px}
+.livedot{width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgba(61,220,151,.6);animation:ping 1.4s infinite}
+.livedot.off{background:#5a554e;animation:none}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
+.spark{display:block}
+.matrix{display:flex;flex-wrap:wrap;gap:5px;margin-top:22px;position:relative}
+.led{width:14px;height:14px;border-radius:3px;background:#2a2826;transition:background .4s,box-shadow .4s}
+.led.booting{background:var(--amber);animation:blink .5s steps(2) infinite}
+.led.running{background:var(--live);box-shadow:0 0 8px rgba(61,220,151,.55);animation:flick 1.6s ease-in-out infinite}
+.led.retrying{background:#b9772c}
+.led.done{background:#e9e4da}
+.led.target{background:#fff;box-shadow:0 0 0 2px var(--live),0 0 12px rgba(61,220,151,.9)}
+.led.failed{background:#5c2a21}
+@keyframes blink{50%{opacity:.25}}
+@keyframes flick{0%,100%{opacity:1}50%{opacity:.55}}
+.fstats{display:flex;gap:26px;margin-top:20px;flex-wrap:wrap;font:12px 'Geist Mono';color:#8f897f;position:relative}
+.fstats b{color:#f4f1ea;font-weight:500;font-size:13px}
+.fstats a{color:#f4f1ea}
+/* run layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;padding:24px 0 60px}
+.gridhead,.row{display:grid;gap:8px}
+.gridhead{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2}
+.gridhead div{display:flex;align-items:center;gap:7px;font:12px 'Geist Mono';white-space:nowrap;overflow:hidden}
+.taskline{grid-column:1/-1;font-size:12.5px;color:#5f5c57;margin:14px 0 2px;line-height:1.45;display:flex;gap:10px}
+.taskline .mono{color:var(--muted);font-size:11px;flex:none;padding-top:1px}
+.tile{border-radius:10px;min-height:118px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s}
+.tile:hover{transform:translateY(-1px)}
+.tile.queued{border:1px dashed #d6d1c8;background:transparent;display:flex;align-items:center;justify-content:center;color:#b3ada3;font:11px 'Geist Mono'}
+.tile.term{background:var(--term);color:var(--termtext);border:1px solid #2b2926;font:11px/1.55 'Geist Mono',monospace;display:flex;flex-direction:column}
+.term .hd{display:flex;align-items:center;gap:6px;padding:7px 9px;border-bottom:1px solid var(--termline);color:#8f897f;font-size:10.5px}
+.term .hd .tmr{margin-left:auto;color:#cfc9be;font-variant-numeric:tabular-nums}
+.term .bd{padding:6px 9px 8px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;overflow:hidden}
+.term .ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#a59f94}
+.term .ln:last-child{color:#f4f1ea}
+.term .ln.new{animation:slidein .35s ease-out}
+@keyframes slidein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tile.term.working{border-color:#24533f;box-shadow:0 0 0 1px rgba(61,220,151,.12),0 10px 30px -18px rgba(61,220,151,.45);animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 1px rgba(61,220,151,.28),0 10px 34px -14px rgba(61,220,151,.6)}}
+.ln.install{color:#7fd3b6!important}.ln.search{color:#9fb7ff}.ln.fetch{color:#c9b3ff}.ln.warn{color:var(--amber)!important}.ln.check{color:#e7d38a}.ln.report{color:var(--live)!important}
+.cursor{display:inline-block;width:6px;height:11px;background:#f4f1ea;vertical-align:-2px;animation:blink 1s steps(2) infinite;margin-left:2px}
+.led-sm{width:7px;height:7px;border-radius:50%;background:var(--live);box-shadow:0 0 6px rgba(61,220,151,.8);animation:flick 1.2s infinite;flex:none}
+.led-sm.amber{background:var(--amber);box-shadow:none;animation:blink .5s steps(2) infinite}
+.tile.done{background:var(--panel);border:1px solid var(--line);padding:10px 11px;display:flex;flex-direction:column;justify-content:space-between;animation:flip .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes flip{from{transform:perspective(600px) rotateY(80deg);opacity:0}to{transform:none;opacity:1}}
+.tile.done .st{font:10.5px 'Geist Mono';color:var(--muted);letter-spacing:.04em}
+.tile.done .pick{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;line-height:1.2}
+.tile.done .pick img{width:20px;height:20px;border-radius:4px}
+.tile.done.target{border-color:rgba(46,125,107,.6);background:var(--greenbg);box-shadow:0 0 0 3px rgba(61,220,151,.18)}
+.tile.failed{background:var(--soft);border:1px solid var(--line);padding:10px 11px;color:var(--muted);font:11px 'Geist Mono'}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+.card h3{font-family:Newsreader;font-weight:400;font-size:21px;margin-bottom:12px}
+.pct{font-family:Newsreader;font-size:56px;line-height:.9;letter-spacing:-.03em}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 30px;align-items:center;gap:10px;margin:9px 0}
+.bar .nm{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .nm img{width:14px;height:14px;border-radius:3px}
+.bar .tr{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:#cfcac2;border-radius:4px;transition:width .6s}
+.bar.t .tr i{background:var(--green)}
+.bar .n{font:13px 'Geist Mono';text-align:right}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td{padding:8px 0;border-top:1px solid var(--line);vertical-align:top}
+td+td{text-align:right;font-family:'Geist Mono'}
+.cta{background:var(--ink);color:var(--bg)}
+.cta h3{color:var(--bg)}
+.cta p{color:rgba(250,248,245,.72);line-height:1.6;font-size:13px;margin-bottom:14px}
+.cta code{display:block;font:11.5px 'Geist Mono';background:rgba(255,255,255,.08);border-radius:6px;padding:8px 10px;margin-top:12px;color:rgba(250,248,245,.8);word-break:break-all}
+/* drawer + modal */
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(540px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:-30px 0 80px -40px rgba(0,0,0,.35);transform:translateX(105%);transition:transform .25s;z-index:10;overflow:auto;padding:28px}
+#drawer.open{transform:none}
+#drawer h2{font-family:Newsreader;font-weight:400;font-size:30px;letter-spacing:-.02em;margin:8px 0 14px}
+#drawer .sec{margin-top:20px}
+#drawer .sec .eyebrow{margin-bottom:8px}
+#drawer blockquote{background:var(--soft);border-radius:8px;padding:12px 14px;line-height:1.55}
+#drawer .log{background:var(--term);color:var(--termtext);border-radius:8px;padding:10px 12px;font:11.5px/1.6 'Geist Mono';max-height:320px;overflow:auto}
+.pkgs{display:flex;flex-wrap:wrap;gap:6px}
+.x{position:absolute;top:18px;right:20px;background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted)}
+#modal{position:fixed;inset:0;background:rgba(22,21,19,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+#modal.open{display:flex}
+#modal .box{background:var(--bg);border-radius:16px;max-width:520px;width:100%;padding:30px;box-shadow:0 40px 120px -40px rgba(0,0,0,.5);position:relative}
+#modal h2{font-family:Newsreader;font-weight:400;font-size:34px;letter-spacing:-.02em;line-height:1.1}
+#modal p{color:#5f5c57;line-height:1.6;margin-top:12px}
+#modal ul{margin:14px 0 0 18px;color:#5f5c57;line-height:1.7}
+#modal .acts{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+#modal code{display:block;font:12px 'Geist Mono';background:var(--soft);border-radius:8px;padding:10px 12px;margin-top:16px;word-break:break-all}
+@media (max-width:980px){.layout{grid-template-columns:1fr}.how{grid-template-columns:1fr}.how div+div{border-left:0;padding-left:0;border-top:1px solid var(--line)}}
+@media (max-width:640px){.gridhead div span.l{display:none}.term .bd{display:none}.tile{min-height:64px}.live .big{font-size:56px}.task{grid-template-columns:1fr}.task .n{display:none}.task .side{flex-direction:row;justify-content:space-between}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><a class="brand" href="/" onclick="event.preventDefault();go('/')">Agent Picks <span>by OpenComputer</span></a><div class="right"><span class="tries" id="tries"></span><a class="btn ghost sm" href="https://cal.com/team/digger/opencomputer-founder-chat" target="_blank" rel="noreferrer">Book a demo</a></div></nav>
+  <div id="app"></div>
+</div>
+<aside id="drawer"><button class="x" onclick="closeDrawer()" aria-label="Close">×</button><div id="dbody"></div></aside>
+<div id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="mbody"></div></div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fav = (url) => { try { return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`; } catch { return ""; } };
+const STACKS = [["nextjs", "Next.js"], ["express", "Express"], ["fastapi", "FastAPI"]];
+const DEMO = "https://cal.com/team/digger/opencomputer-founder-chat";
+let config = { public: false, maxTasks: 20, roster: [], templateUrl: "", repo: "", usage: null };
+let draft = null; // { url, plan, models }
+let live = null;  // current run page state
+try { draft = JSON.parse(sessionStorage.getItem("draft") || "null"); } catch {}
+const saveDraft = () => { try { sessionStorage.setItem("draft", JSON.stringify(draft)); } catch {} };
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, { ...opts, headers: { "content-type": "application/json" } });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.error || `Request failed (${r.status})`), { template: j.template });
+  return j;
+}
+async function loadConfig() {
+  try { config = await api("/api/config"); } catch {}
+  const u = config.usage;
+  $("#tries").textContent = u ? `${u.remaining} of ${u.limit} free runs left` : "";
+}
+
+// ---------- routing ----------
+function route() {
+  stopLive(); closeDrawer();
+  const m = location.pathname.match(/^\/run\/([a-z0-9]+)/);
+  if (m) return showRun(m[1]);
+  if (location.pathname === "/new" && draft?.plan) return showEditor();
+  showHome();
+}
+window.onpopstate = route;
+function go(path) { history.pushState(null, "", path); route(); }
+
+// ---------- limit modal ----------
+function showLimit(msg) {
+  const cli = `npx opencomputer template deploy ${config.repo || "https://github.com/diggerhq/agentpicks"}`;
+  $("#mbody").innerHTML = `<button class="x" onclick="closeModal()" aria-label="Close">×</button>
+    <p class="eyebrow">${esc(msg || "You've used your free runs")}</p>
+    <h2>Run Agent Picks on your own account</h2>
+    <p>Deploy your own copy to OpenComputer in one click. It comes set up to run <b>every Monday on a schedule</b>, so you can watch how coding agents' picks change week to week.</p>
+    <ul><li>Every session keeps its full transcript and installs</li><li>Edit the requests and models in code</li><li>Point it at your URL with one runtime variable</li></ul>
+    <div class="acts"><a class="btn" href="${esc(config.templateUrl)}" target="_blank" rel="noreferrer">Deploy your own &rarr;</a><a class="btn ghost" href="${DEMO}" target="_blank" rel="noreferrer">Book a demo</a></div>
+    <code>${esc(cli)}</code>`;
+  $("#modal").classList.add("open");
+}
+function closeModal() { $("#modal").classList.remove("open"); }
+
+// ---------- home ----------
+async function showHome() {
+  const roster = config.roster.length ? config.roster : [];
+  const opts = [2, 4, 10, 20].filter((n) => n <= config.maxTasks);
+  if (!opts.includes(config.maxTasks)) opts.push(config.maxTasks);
+  $("#app").innerHTML = `
+  <section class="hero">
+    <p class="eyebrow">An experiment on OpenComputer</p>
+    <h1>Do coding agents pick <i>you?</i></h1>
+    <p>Paste your URL. We draft real developer requests for your category, you edit them, then every request runs as a coding agent on its own computer. Watch which vendor each agent actually installs.</p>
+    <form class="form" id="f">
+      <input id="u" placeholder="yourcompany.com" autocomplete="off" required value="${esc(draft?.url ?? "")}">
+      <select id="n" title="How many developer requests">${opts.map((n) => `<option value="${n}" ${n === Math.min(4, config.maxTasks) ? "selected" : ""}>${n} requests × ${roster.length || 5} models</option>`).join("")}</select>
+      <button class="btn" id="go">Draft the requests &rarr;</button>
+    </form>
+    <div class="err" id="err"></div>
+    <div class="models">${roster.map((m) => `<span class="chip"><span class="dot" style="background:${m.color}"></span>${esc(m.label)}</span>`).join("")}</div>
+  </section>
+  <div class="how">
+    <div><span class="eyebrow">01</span><b>We draft, you edit</b><p>From your homepage, a planner writes requests a developer would give a coding agent. None names you or a competitor. Edit any of them before you run.</p></div>
+    <div><span class="eyebrow">02</span><b>Every request gets a computer</b><p>Each session is a coding agent in its own project on its own OpenComputer computer. They all start at once: search, read docs, install, write code, type-check.</p></div>
+    <div><span class="eyebrow">03</span><b>You see what they chose</b><p>Each agent reports its pick, checked against the install commands in its session log. Five models, every request.</p></div>
+  </div>
+  <section class="recent" id="recent"></section>`;
+  $("#u").focus();
+  $("#f").onsubmit = async (e) => {
+    e.preventDefault();
+    const url = $("#u").value.trim(), n = Number($("#n").value);
+    if (config.usage && config.usage.remaining === 0) return showLimit();
+    $("#app").innerHTML = `<div class="center"><div class="spinner"></div><p class="eyebrow">${esc(url)}</p><h2>Drafting developer requests…</h2><p>Reading the homepage and writing requests that never name a vendor.</p></div>`;
+    try {
+      const plan = await api("/api/plan", { method: "POST", body: JSON.stringify({ url, tasks: n }) });
+      draft = { url, plan, models: config.roster.map((m) => m.key) };
+      saveDraft();
+      history.pushState(null, "", "/new");
+      showEditor();
+    } catch (err) {
+      await showHome();
+      if (err.template) return showLimit(err.message);
+      $("#err").textContent = err.message;
+    }
+  };
+  if (!config.public) {
+    try {
+      const runs = await api("/api/runs");
+      if (runs.length) $("#recent").innerHTML = `<p class="eyebrow" style="margin-bottom:6px">Recent runs</p>` + runs.map((r) => `<a href="/run/${r.id}" onclick="event.preventDefault();go('/run/${r.id}')"><span><b>${esc(r.brand)}</b> <span style="color:var(--muted)">${esc(r.url)}</span></span><span class="mono" style="color:var(--muted)">${r.size} sessions · ${new Date(r.createdAt).toLocaleString()}</span></a>`).join("");
+    } catch {}
+  }
+}
+
+// ---------- editor ----------
+function showEditor() {
+  const p = draft.plan;
+  $("#app").innerHTML = `
+  <div class="edhead">
+    <div><p class="eyebrow">${esc(p.category)} · ${esc(p.domain)}</p><h1>Review the requests for ${esc(p.brand)}</h1>
+    <p>Each request runs on every model you pick, in a fresh project on its own computer. Agents never see ${esc(p.brand)}'s name, so keep vendors out of the wording.</p></div>
+    <div><p class="eyebrow" style="margin-bottom:8px">Models</p><div class="models" id="mods" style="margin:0"></div></div>
+  </div>
+  <div class="tasks" id="tasks"></div>
+  <div class="sticky"><div class="wrap"><div class="sum" id="sum"></div><div style="display:flex;gap:10px;align-items:center"><span class="err" id="err" style="margin:0"></span><button class="btn ghost" onclick="go('/')">Start over</button><button class="btn" id="send">Send the agents</button></div></div></div>`;
+  renderMods(); renderTasks();
+  $("#send").onclick = startRun;
+}
+function renderMods() {
+  $("#mods").innerHTML = config.roster.map((m) => `<button class="chip ${draft.models.includes(m.key) ? "" : "off"}" onclick="toggleModel('${m.key}')"><span class="dot" style="background:${m.color}"></span>${esc(m.label)}</button>`).join("");
+  updateSum();
+}
+function toggleModel(k) {
+  draft.models = draft.models.includes(k) ? draft.models.filter((x) => x !== k) : [...draft.models, k];
+  saveDraft(); renderMods();
+}
+function renderTasks() {
+  const t = draft.plan.tasks;
+  $("#tasks").innerHTML = t.map((x, i) => `
+    <div class="task"><span class="n">${String(i + 1).padStart(2, "0")}</span>
+      <textarea rows="2" oninput="editTask(${i}, this)" placeholder="Describe what the developer wants built, without naming a vendor">${esc(x.task)}</textarea>
+      <div class="side"><select onchange="draft.plan.tasks[${i}].stack=this.value;saveDraft()">${STACKS.map(([v, l]) => `<option value="${v}" ${x.stack === v ? "selected" : ""}>${l}</option>`).join("")}</select><button class="rm" onclick="removeTask(${i})">Remove</button></div>
+    </div>`).join("") + (t.length < config.maxTasks ? `<button class="add" onclick="addTask()">+ Add a request</button>` : "");
+  document.querySelectorAll(".task textarea").forEach(autosize);
+  updateSum();
+}
+function autosize(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
+function editTask(i, el) { draft.plan.tasks[i].task = el.value; saveDraft(); autosize(el); updateSum(); }
+function removeTask(i) { draft.plan.tasks.splice(i, 1); saveDraft(); renderTasks(); }
+function addTask() { draft.plan.tasks.push({ task: "", stack: STACKS[draft.plan.tasks.length % 3][0] }); saveDraft(); renderTasks(); const ta = document.querySelectorAll(".task textarea"); ta[ta.length - 1]?.focus(); }
+function updateSum() {
+  const n = draft.plan.tasks.filter((t) => t.task.trim().length >= 10).length, m = draft.models.length;
+  const u = config.usage;
+  $("#sum").innerHTML = `<b>${n}</b> requests × <b>${m}</b> models = <b>${n * m}</b> coding sessions, all started at once${u ? ` <span class="tries">· ${u.remaining} free runs left</span>` : ""}`;
+  $("#send").textContent = `Send ${n * m} agents →`;
+  $("#send").disabled = !n || !m;
+}
+async function startRun() {
+  if (config.usage && config.usage.remaining === 0) return showLimit();
+  $("#send").disabled = true; $("#send").textContent = "Starting computers…"; $("#err").textContent = "";
+  try {
+    const { id } = await api("/api/runs", { method: "POST", body: JSON.stringify({ url: draft.url, plan: draft.plan, models: draft.models }) });
+    loadConfig();
+    go(`/run/${id}`);
+  } catch (err) {
+    updateSum();
+    if (err.template) return showLimit(err.message);
+    $("#err").textContent = err.message;
+  }
+}
+
+// ---------- run ----------
+function stopLive() { if (live) { clearTimeout(live.poll); clearInterval(live.clock); clearTimeout(live.act); live.dead = true; } live = null; }
+
+async function showRun(id) {
+  $("#app").innerHTML = `<div class="center"><div class="spinner"></div><h2>Loading the fleet…</h2></div>`;
+  live = { id, built: false, trails: {}, fetched: {}, samples: [], skew: 0, v: null };
+  await pollRun();
+  live && (live.clock = setInterval(tick, 1000));
+  live && activityLoop();
+}
+
+async function pollRun() {
+  if (!live || live.dead) return;
+  const me = live;
+  try {
+    const v = await api(`/api/runs/${me.id}`);
+    if (me.dead) return;
+    me.v = v; me.skew = v.now - Date.now();
+    me.samples = timeline(v);
+    if (!me.built) buildRun(v);
+    updateRun(v);
+    if (!v.finished) me.poll = setTimeout(pollRun, 2500);
+  } catch (err) {
+    if (!me.built) $("#app").innerHTML = `<div class="center"><h2>${esc(err.message)}</h2></div>`;
+    else me.poll = setTimeout(pollRun, 5000);
+  }
+}
+
+function buildRun(v) {
+  live.built = true;
+  const cols = `repeat(${v.roster.length},minmax(0,1fr))`;
+  const rows = v.plan.tasks.map((t, ti) => `<div class="taskline"><span class="mono">${String(ti + 1).padStart(2, "0")} · ${esc(t.stack)}</span><span>${esc(t.task)}</span></div>` +
+    v.cells.filter((c) => c.task === ti).sort((a, b) => a.i - b.i).map((c) => `<div class="tile" id="t${c.i}" onclick="openCell(${c.i})"></div>`).join("")).join("");
+  $("#app").innerHTML = `
+  <section class="fleet">
+    <div class="top">
+      <div><p class="cat">${esc(v.plan.category)} · ${esc(v.plan.domain)}</p><h1>${esc(v.plan.brand)}</h1><p class="sum">${esc(v.plan.summary)}</p></div>
+      <div class="live">
+        <div><div class="big" id="lnum">0</div><div class="lab"><span class="livedot" id="ldot"></span><span id="llab">computers running</span></div></div>
+        <div><svg class="spark" id="spark" width="220" height="64" viewBox="0 0 220 64"></svg><div class="lab"><span id="peak">peak 0</span> · <span id="clock">00:00</span></div></div>
+      </div>
+    </div>
+    <div class="matrix" id="matrix">${v.cells.map((c) => `<span class="led" id="l${c.i}" title="${esc(v.roster.find((r) => r.key === c.model)?.label)} · request ${c.task + 1}"></span>`).join("")}</div>
+    <div class="fstats" id="fstats"></div>
+  </section>
+  <div class="layout">
+    <div>
+      <div class="gridhead" style="grid-template-columns:${cols}">${v.roster.map((m) => `<div><span class="dot" style="background:${m.color}"></span><span class="l">${esc(m.label)}</span></div>`).join("")}</div>
+      <div class="row" style="grid-template-columns:${cols}">${rows}</div>
+    </div>
+    <div>
+      <div class="card"><p class="eyebrow">Picked ${esc(v.plan.brand)}</p><div style="display:flex;align-items:baseline;gap:12px;margin-top:10px"><span class="pct" id="pct">–</span><span id="pctlab" style="color:var(--muted)"></span></div></div>
+      <div class="card"><h3>What the agents chose</h3><div id="board"></div></div>
+      <div class="card"><h3>By model</h3><table id="bymodel"></table></div>
+      <div class="card cta"><h3>Run this every week</h3><p>Deploy your own Agent Picks to OpenComputer. It runs on a weekly schedule by default against your URL, so you can see whether coding agents start picking you.</p><a class="btn light" href="${esc(v.templateUrl)}" target="_blank" rel="noreferrer">Deploy your own &rarr;</a><code>npx opencomputer template deploy ${esc(config.repo || "https://github.com/diggerhq/agentpicks")}</code></div>
+    </div>
+  </div>`;
+}
+
+function updateRun(v) {
+  const c = v.counts, lv = c.running + c.booting;
+  $("#lnum").textContent = lv;
+  $("#llab").textContent = v.finished ? "computers running · finished" : lv === 1 ? "computer running" : "computers running";
+  $("#ldot").classList.toggle("off", !lv);
+  const peak = Math.max(...live.samples.map((s) => s.n), 0);
+  $("#peak").textContent = `peak ${peak}`;
+  drawSpark();
+  $("#fstats").innerHTML = [
+    [c.total, "sessions"], [c.booting, "booting"], [c.running, "working"], [c.done, "finished"],
+    [c.retrying, "retrying"], [c.failed, "failed"],
+  ].map(([n, l]) => `<span><b>${n}</b> ${l}</span>`).join("") + (v.finished ? "" : ` <span><a href="#" onclick="stopRun(event)">stop run</a></span>`);
+  for (const cell of v.cells) {
+    const led = document.getElementById("l" + cell.i);
+    if (led) led.className = "led " + (cell.state === "done" && cell.isTarget ? "target" : cell.state);
+    renderTile(cell, v);
+  }
+  $("#pct").textContent = c.done ? Math.round((100 * c.picked) / c.done) + "%" : "–";
+  $("#pctlab").textContent = c.done ? `${c.picked} of ${c.done} finished agents` : "waiting for the first picks";
+  const max = Math.max(1, ...v.leaderboard.map((x) => x.count));
+  $("#board").innerHTML = v.leaderboard.length ? v.leaderboard.map((x) => `<div class="bar ${x.target ? "t" : ""}"><div><div class="nm">${fav(x.url) ? `<img src="${fav(x.url)}" alt="">` : ""}${esc(x.name)}</div><div class="tr"><i style="width:${(100 * x.count) / max}%"></i></div></div><div class="n">${x.count}</div></div>`).join("") : `<p style="color:var(--muted)">Picks appear as agents finish.</p>`;
+  $("#bymodel").innerHTML = v.byModel.map((m) => `<tr><td><span class="dot" style="background:${m.color};margin-right:7px"></span>${esc(m.label)}<div style="color:var(--muted);font-size:11.5px;margin-top:3px">${m.top.map(([n, k]) => `${esc(n)} ×${k}`).join(", ") || "&nbsp;"}</div></td><td>${m.picked}/${m.done}</td></tr>`).join("");
+  if (v.finished && config.public && !live.prompted) { live.prompted = true; setTimeout(() => showLimit("Want this every week?"), 1500); }
+}
+
+// Running computers over time, rebuilt from each session's start and end.
+function timeline(v) {
+  const iv = v.cells.filter((c) => c.startedAt).map((c) => [c.startedAt, c.endedAt || (c.state === "failed" ? c.startedAt : v.now)]);
+  if (!iv.length) return [{ t: v.now, n: 0 }];
+  const t0 = Math.min(...iv.map((x) => x[0])), t1 = v.finished ? Math.max(...iv.map((x) => x[1])) : v.now;
+  const N = 90, out = [];
+  for (let k = 0; k <= N; k++) { const t = t0 + ((t1 - t0) * k) / N; out.push({ t, n: iv.filter(([a, b]) => a <= t && t <= b).length }); }
+  return out;
+}
+const fmt = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; };
+
+function renderTile(cell, v) {
+  const el = document.getElementById("t" + cell.i);
+  if (!el) return;
+  const tr = live.trails[cell.sessionId] || { lines: [] };
+  const sig = `${cell.state}|${cell.sessionId}|${tr.lines.length}|${cell.pick?.name}`;
+  if (el.dataset.sig === sig) return;
+  const prevLines = Number(el.dataset.lines || 0);
+  el.dataset.sig = sig;
+  const model = v.roster.find((r) => r.key === cell.model);
+  if (cell.state === "done") {
+    el.className = "tile done" + (cell.isTarget ? " target" : "");
+    el.innerHTML = `<div class="st">✓ ${cell.pick.verified ? "built & checked" : "built"} · <span class="tmr2">${cell.endedAt && cell.startedAt ? fmt(cell.endedAt - cell.startedAt) : ""}</span></div><div class="pick">${fav(cell.pick.url) ? `<img src="${fav(cell.pick.url)}" alt="">` : ""}${esc(cell.pick.name)}</div>`;
+  } else if (cell.state === "failed") {
+    el.className = "tile failed";
+    el.innerHTML = `✕ ended without a pick`;
+  } else if (cell.state === "queued") {
+    el.className = "tile queued";
+    el.innerHTML = `waiting`;
+  } else {
+    const lines = tr.lines.slice(-5);
+    const booting = cell.state === "booting" || cell.state === "retrying" || !lines.length;
+    el.className = "tile term" + (booting ? "" : " working");
+    const body = booting
+      ? `<div class="ln">${cell.state === "retrying" ? "↻ retrying on a fresh computer" : "booting vm…"}</div><div class="ln">$ <span class="cursor"></span></div>`
+      : lines.map((l, k) => `<div class="ln ${l.kind} ${k === lines.length - 1 && tr.lines.length > prevLines ? "new" : ""}">${esc(l.text)}</div>`).join("") + `<div class="ln"><span class="cursor"></span></div>`;
+    el.innerHTML = `<div class="hd"><span class="led-sm ${booting ? "amber" : ""}"></span>vm-${esc((cell.sessionId || "").slice(0, 4) || "····")}<span class="tmr" data-start="${cell.startedAt || ""}">${cell.startedAt ? fmt(Date.now() + live.skew - cell.startedAt) : "--:--"}</span></div><div class="bd">${body}</div>`;
+  }
+  el.dataset.lines = String(tr.lines.length);
+}
+
+function tick() {
+  if (!live?.v) return;
+  const now = Date.now() + live.skew;
+  const end = live.v.finished ? Math.max(live.v.createdAt, ...live.v.cells.map((c) => c.endedAt || 0)) : now;
+  $("#clock") && ($("#clock").textContent = fmt(end - live.v.createdAt));
+  document.querySelectorAll(".tmr[data-start]").forEach((t) => { const s = Number(t.dataset.start); if (s) t.textContent = fmt(now - s); });
+}
+
+function drawSpark() {
+  const s = live.samples;
+  if (s.length < 2) return;
+  const max = Math.max(4, ...s.map((x) => x.n)), W = 220, H = 60;
+  const pts = s.map((x, k) => [(k / (s.length - 1)) * W, H - (x.n / max) * (H - 6) - 2]);
+  const d = pts.map((p, k) => `${k ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join("");
+  $("#spark").innerHTML = `<defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3DDC97" stop-opacity=".35"/><stop offset="1" stop-color="#3DDC97" stop-opacity="0"/></linearGradient></defs><path d="${d}L${W},${H}L0,${H}Z" fill="url(#g)"/><path d="${d}" fill="none" stroke="#3DDC97" stroke-width="1.6"/><circle cx="${pts.at(-1)[0]}" cy="${pts.at(-1)[1]}" r="3" fill="#3DDC97"/>`;
+}
+
+// Stream each live computer's tool calls into its tile, a few computers per tick.
+async function activityLoop() {
+  if (!live || live.dead) return;
+  const me = live, v = me.v;
+  if (v) {
+    const runningCells = v.cells.filter((c) => c.sessionId && (c.state === "running" || c.state === "booting"));
+    runningCells.sort((a, b) => (me.fetched[a.sessionId] || 0) - (me.fetched[b.sessionId] || 0));
+    await Promise.all(runningCells.slice(0, 12).map(async (c) => {
+      const tr = me.trails[c.sessionId] || (me.trails[c.sessionId] = { after: 0, lines: [], installs: [] });
+      me.fetched[c.sessionId] = Date.now();
+      try {
+        const a = await api(`/api/sessions/${c.sessionId}/activity?after=${tr.after}`);
+        tr.after = a.after; tr.lines.push(...a.lines); tr.installs = [...new Set([...tr.installs, ...a.installs])];
+        if (tr.lines.length > 60) tr.lines = tr.lines.slice(-60);
+      } catch {}
+    }));
+    if (!me.dead) for (const c of v.cells) renderTile(c, v);
+  }
+  if (!me.dead && !(v && v.finished)) me.act = setTimeout(activityLoop, 1500);
+}
+
+async function stopRun(e) {
+  e.preventDefault();
+  if (!confirm("End every running session in this run?")) return;
+  await api(`/api/runs/${live.id}/stop`, { method: "POST" });
+}
+
+async function openCell(i) {
+  const v = live.v, c = v.cells.find((x) => x.i === i), t = v.plan.tasks[c.task], m = v.roster.find((r) => r.key === c.model);
+  const tr = live.trails[c.sessionId] || { lines: [], installs: [] };
+  const dur = c.startedAt ? fmt((c.endedAt ?? Date.now() + live.skew) - c.startedAt) : "";
+  $("#dbody").innerHTML = `
+    <p class="eyebrow"><span class="dot" style="background:${m.color};margin-right:6px"></span>${esc(m.label)} · ${esc(t.stack)}${c.attempt > 1 ? ` · attempt ${c.attempt}` : ""}</p>
+    <h2>${c.pick ? esc(c.pick.name) : c.state === "failed" ? "Ended without a pick" : "Working…"}</h2>
+    ${c.isTarget ? `<span class="chip" style="border-color:rgba(46,125,107,.5);color:var(--green)">Picked ${esc(v.plan.brand)}</span>` : ""}
+    <div class="sec"><p class="eyebrow">The developer asked</p><blockquote>${esc(t.task)}</blockquote></div>
+    ${c.pick ? `<div class="sec"><p class="eyebrow">Why it chose ${esc(c.pick.name)}</p><blockquote>${esc(c.pick.reason)}</blockquote></div>
+    ${c.pick.supporting?.length ? `<div class="sec"><p class="eyebrow">Also used</p><div class="pkgs">${c.pick.supporting.map((a) => `<span class="chip">${esc(a)}</span>`).join("")}</div></div>` : ""}
+    <div class="sec"><p class="eyebrow">Also considered</p><div class="pkgs">${c.pick.alternatives.map((a) => `<span class="chip">${esc(a)}</span>`).join("") || "<span style='color:var(--muted)'>None listed</span>"}</div></div>` : ""}
+    <div class="sec"><p class="eyebrow">Installed (from the session log)</p><div class="pkgs" id="dinst">${(c.pick?.packages?.length ? c.pick.packages : tr.installs).map((a) => `<span class="chip mono">${esc(a)}</span>`).join("") || "<span style='color:var(--muted)'>Loading…</span>"}</div></div>
+    <div class="sec"><p class="eyebrow">Terminal</p><div class="log" id="dlog">${tr.lines.map((l) => `<div class="ln ${l.kind}">${esc(l.text)}</div>`).join("") || "Loading…"}</div></div>
+    <div class="sec"><p class="eyebrow">Session</p><p class="mono" style="font-size:12px;line-height:1.8">${esc(c.sessionId || "not started")}<br>${dur}${c.pick ? ` · checks ${c.pick.verified ? "passed" : "not verified"}` : ""}</p></div>`;
+  $("#drawer").classList.add("open");
+  if (c.sessionId && !tr.full) {
+    // Read the whole log once for finished sessions the live view never streamed.
+    const all = { after: 0, lines: [], installs: [] };
+    for (let k = 0; k < 4; k++) {
+      try { const a = await api(`/api/sessions/${c.sessionId}/activity?after=${all.after}`); all.after = a.after; all.lines.push(...a.lines); all.installs.push(...a.installs); if (!a.more) break; } catch { break; }
+    }
+    live.trails[c.sessionId] = { ...all, installs: [...new Set(all.installs)], full: true };
+    if ($("#dlog")) $("#dlog").innerHTML = all.lines.map((l) => `<div class="ln ${l.kind}">${esc(l.text)}</div>`).join("") || "No tool calls yet.";
+    if ($("#dinst")) $("#dinst").innerHTML = [...new Set(all.installs)].map((a) => `<span class="chip mono">${esc(a)}</span>`).join("") || "<span style='color:var(--muted)'>Nothing installed</span>";
+  }
+}
+function closeDrawer() { $("#drawer").classList.remove("open"); }
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeDrawer(); closeModal(); } });
+
+loadConfig().then(route);
+</script>
+</body>
+</html>

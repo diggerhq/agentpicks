@@ -1,0 +1,4 @@
+{
+  "tools": { "shell": true, "read": true, "webfetch": true },
+  "permission": { "shell": "allow", "read": "allow", "webfetch": "allow", "external_directory": "allow" }
+}

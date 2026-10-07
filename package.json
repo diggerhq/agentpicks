@@ -5,17 +5,21 @@
   "type": "module",
   "scripts": {
     "gen": "tsx scripts/gen-agents.ts",
-    "deploy:all": "for k in claude gpt gemini grok deepseek; do (cd projects/$k && opencomputer deploy) || exit 1; done",
-    "web": "tsx web/server.ts",
-    "typecheck": "tsc -p ."
+    "deploy": "opencomputer deploy && opencomputer deploy --alias production",
+    "web": "OC_ENVIRONMENT=${OC_ENVIRONMENT:-production} tsx web/server.ts",
+    "web:public": "APP_MODE=public OC_ENVIRONMENT=${OC_ENVIRONMENT:-production} tsx web/server.ts",
+    "typecheck": "tsc -p .",
+    "bundle:vercel": "esbuild web/vercel-entry.ts --bundle --platform=node --format=esm --target=node22 --outfile=api/index.js --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\""
   },
   "dependencies": {
     "@opencomputer/agent": "^0.8.0",
-    "@opencomputer/sdk": "^2.3.0"
+    "@opencomputer/sdk": "^2.3.0",
+    "@vercel/blob": "^2.8.1"
   },
   "devDependencies": {
     "@opencomputer/cli": "^0.7.0",
     "@types/node": "^26.6.4",
+    "esbuild": "^0.28.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
