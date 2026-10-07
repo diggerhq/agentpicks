@@ -29,7 +29,7 @@ Deployed from the template, it **runs every Monday on a schedule** against your
                  │  start one session per request × model (management API)                        │
                  ▼                                                                                 │
    agentpicks--dev-claude · --dev-gpt · --dev-gemini · --dev-grok · --dev-deepseek                │
-   each session: own computer · shell · web fetch · report_choice (result tool) ── ─────┘
+   each session: own computer · shell · web fetch · report_choice (result tool) ──────────────┘
 ```
 
 | Path | What it is |
